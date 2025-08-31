@@ -3,3 +3,6 @@ reports/
 *.csv
 *.zip
 __pycache__/
+runtime/
+docs/.ipynb_checkpoints/
+main
