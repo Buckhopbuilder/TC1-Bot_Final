@@ -1,0 +1,35 @@
+name: TC1 Guardrails
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for forbidden files
+        run: |
+          forbidden=$(git diff --cached --name-only | grep -E "\.csv$|\.zip$|^data/|^reports/" || true)
+          if [[ -n "$forbidden" ]]; then
+            echo "❌ Forbidden files detected: $forbidden"
+            exit 1
+          fi
+
+      - name: Check for accidental 0.618 usage
+        run: |
+          bad=$(grep -R "0.618" tools/ || true)
+          if [[ -n "$bad" ]]; then
+            echo "❌ TC1 geometry violation: 0.618 found in detection code!"
+            exit 1
+          fi
+
+      - name: Check for weakened .gitignore
+        run: |
+          if ! grep -q "data/" .gitignore; then
+            echo "❌ .gitignore must contain data/ exclusion"
+            exit 1
+          fi
