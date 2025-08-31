@@ -1,0 +1,52 @@
+# TC1 Bot – Default Live Config
+symbols:
+  - ETHUSDT
+  - AVAXUSDT
+  - MANAUSDT
+  - SOLUSDT
+
+timeframes:
+  base: 5m
+  higher:
+    - 15m
+    - 60m
+
+fib_levels:
+  entry: 0.382
+  stop: 0.170
+  tp: 1.272
+
+filters:
+  session_block:
+    london_open: "07:00-09:00"
+    ny_open: "13:00-16:00"
+  concurrency_cap: 2
+  min_prob: 0.28
+  max_trades_per_day: 6
+  allow_short: true
+  allow_long: true
+
+execution:
+  cost_R: 0.02
+  commission_bps: 4
+
+risk_model:
+  mode: hybrid
+  flat_until_balance: 1000
+  flat_risk: 5
+  pct_risk: 0.02
+  fixed_add: 15
+  cap_per_trade: 50
+  cap_total_open: 100
+
+model:
+  path: reports/ml/lgbm_model.pkl
+  features: reports/features/features_at_entry_clean.csv
+
+policy:
+  path: reports/ml/lgbm_policy_top4_exclSess_clean.csv
+
+logging:
+  trades_file: reports/live/live_trades.csv
+  equity_file: reports/live/live_equity.csv
+  level: INFO
