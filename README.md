@@ -12,7 +12,7 @@ Fib Level	Purpose	Rule
 0.17	Stop Loss	Hard stop beyond invalidation
 1.272	Take Profit	Fixed target
 
-⚠️ Important:
+⚠ Important:
 
 0.618 is NEVER used in TC1.
 
