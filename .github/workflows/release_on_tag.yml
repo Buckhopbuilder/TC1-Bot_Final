@@ -1,0 +1,64 @@
+name: Release on Tag
+
+on:
+  push:
+    tags:
+      - 'v*'   # e.g., v0.1.1, v1.0.0
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install zip
+        run: sudo apt-get update && sudo apt-get install -y zip
+
+      - name: Freeze requirements (safety; if file missing)
+        run: |
+          if [ ! -f requirements.txt ]; then
+            pip install --upgrade pip
+            pip freeze > requirements.txt
+          fi
+
+      - name: Build code-only zip
+        run: |
+          TS=$(date +%Y%m%d_%H%M)
+          OUT="TC1_Bot_code_only_${TS}.zip"
+          zip -r "$OUT" tools configs *.py *.ipynb *.md .gitignore requirements.txt \
+            -x "__pycache__/*" "*.csv" "*.zip" "data/*" "reports/*" || true
+          echo "ZIP_NAME=$OUT" >> $GITHUB_ENV
+
+      - name: Compute SHA256
+        id: sha
+        run: |
+          SUM=$(sha256sum "$ZIP_NAME" | awk '{print $1}')
+          echo "sha256=$SUM" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.ZIP_NAME }}
+          name: ${{ github.ref_name }}
+          body: |
+            ## ${{
+              github.ref_name
+            }}
+            Code-only artifact (no data, no reports).
+
+            **SHA256:** ${{ steps.sha.outputs.sha256 }}
+
+            **Notes**
+            - TC1 geometry fixed: Entry 0.382, SL 0.17, TP 1.272 (0.618 not used)
+            - Repo excludes `data/`, `reports/`, `*.csv`, `*.zip`
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
