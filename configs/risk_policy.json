@@ -1,0 +1,5 @@
+{
+  "equity_floor": 999999.0,
+  "daily_loss_cap": 5.0,
+  "max_trades_per_day": 1
+}
