@@ -1,8 +1,35 @@
-data/
-reports/
-*.csv
-*.zip
+# --- Python ---
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+*.log
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# --- Environment / venv ---
+.env
+.venv/
+venv/
+ENV/
+
+# --- Runtime state (do not version) ---
 runtime/
-docs/.ipynb_checkpoints/
+reports/
+data/
+*.csv
+*.pkl
+*.h5
+
+# --- IDE / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Misc ---
 main
